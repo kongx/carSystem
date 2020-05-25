@@ -1,5 +1,8 @@
 package com.jkxy.car.api.controller;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.jkxy.car.api.pojo.BuyCarVO;
 import com.jkxy.car.api.pojo.Car;
 import com.jkxy.car.api.service.CarService;
 import com.jkxy.car.api.utils.JSONResult;
@@ -76,7 +79,6 @@ public class CarController {
 
     /**
      * 通过id增加
-     *
      * @param car
      * @return
      */
@@ -84,5 +86,28 @@ public class CarController {
     public JSONResult insertCar(Car car) {
         carService.insertCar(car);
         return JSONResult.ok();
+    }
+
+    /**
+     * 作业一：购买车辆
+     * @param buyCarVO:车名，车类型，车系，购买数量
+     * @return
+     */
+    @GetMapping("buyCar")
+    public String buyCar(BuyCarVO buyCarVO) {
+        return carService.buyCar(buyCarVO);
+    }
+    /**
+     * 作业二：通过车品牌模糊查询，
+     * @param carName
+     * @return
+     */
+    @GetMapping("findByCarName")
+    public JSONResult findLikeCarName(@RequestParam String carName,@RequestParam int pageNum,@RequestParam int pageSize) {
+        carName="%"+carName.toLowerCase()+"%";
+        PageHelper.startPage(pageNum, pageSize);
+        List<Car> cars = carService.findLikeCarName(carName);
+        PageInfo info = new PageInfo(cars);
+        return JSONResult.ok(info);
     }
 }
